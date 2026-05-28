@@ -1,0 +1,34 @@
+# environment
+.env
+.env.local
+.env.*
+*.key
+*.pem
+
+# environment py
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.pyc
+dist/
+build/
+*.egg-info/
+*.egg
+
+# loge
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/

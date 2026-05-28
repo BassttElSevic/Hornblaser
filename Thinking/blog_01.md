@@ -9,12 +9,12 @@
 - [Blog\_01](#blog_01)
   - [目录](#目录)
   - [全景树](#全景树)
-  - [一、构造参数：client 的](#一构造参数client-的)
+  - [构造参数：client](#构造参数client)
   - [得到回复](#得到回复)
   - [结合结构树的节选来讲解](#结合结构树的节选来讲解)
     - [为什么直接打印 response 是一大坨？](#为什么直接打印-response-是一大坨)
-    - [总结](#总结)
-    - [几个参数东西](#几个参数东西)
+    - [讲解](#讲解)
+      - [参数](#参数)
     - [回到那颗树](#回到那颗树)
 
 ---
@@ -224,7 +224,7 @@ openai.OpenAI(api_key="sk-...")
 
 <a id="toc-构造参数"></a>
 
-## 一、构造参数：client 的
+## 构造参数：client
 
 看了刚刚那颗**大树** 是不是觉得哈人？
 
@@ -387,7 +387,7 @@ ChatCompletion(id='ba7ee2b2-a2bd-4e41-b526-bd2123a08fcf', choices=[Choice(finish
 
 <a id="toc-取值路径"></a>
 
-### 总结
+### 讲解
 
 ```python
 response.choices[0].message.content
@@ -423,10 +423,32 @@ for i, choice in enumerate(response.choices, start=1):
     print(choice.message.content)
     print()
 ```
+对了，有些模型不支持n这个参数，比如deepseek,这个时候，循环三次就好了
 
-<a id="toc-几个参数"></a>
+```python
 
-### 几个参数东西
+# 需要 3 条回复？循环 3 次
+responses = []
+for i in range(3):
+    resp = client.chat.completions.create(
+        model="deepseek-v4-pro",              # 注意！要用正确的模型名
+        messages=[
+            {"role": "system", "content": "你是一个有用的AI助手，协助用户解答问题。"},
+            {"role": "user", "content": "你好啊，你可以帮我做什么？"},
+        ],
+        stream=False
+    )
+    responses.append(resp.choices[0].message.content)
+
+# 打印所有回复
+for idx, content in enumerate(responses, start=1):
+    print(f"第{idx}条回复：")
+    print(content)
+    print("==="*20)
+
+```
+
+#### 参数
 
 **1. `finish_reason` —— AI 为什么说完了？**
 
