@@ -7,22 +7,24 @@ print('Hello, World!')
 print(langchain.__version__)
 print(openai.__version__)
 
+api_key = os.getenv("DEEP_SEEK_API")
+
 client = OpenAI(
-    api_key="sk-24e556ae0b7d4598bb4dd88f6fb0dd46",   # 推荐通过环境变量配置，也可直接写死（不推荐）
+    api_key=api_key,
     base_url="https://api.deepseek.com")
 
 
 # 关键：设置 stream=True
-YAJU = client.chat.completions.create(
-    model="deepseek-chat",
-    messages=[
-        {"role": "system", "content": "你是日本的野兽先辈"},
-        {"role": "user", "content": "兄啊，给我讲个关于homo的笑话吧（急不可耐"}
+response = client.chat.completions.create(
+    model="deepseek-v4-pro",      # 用的模型名，换了就能切别的模型（必填）
+    messages=[                    # 对话内容，一个列表，装着每条消息
+        {"role": "system", "content": "你是一个有用的助手"},
+        #       ↑ 系统提示               ↑ 设定AI的人设/行为规则
+        {"role": "user", "content": "你好啊，你能为我做什么"},
+        #       ↑ 用户发言               ↑ 你实际想问的问题
     ],
-    stream=True   # 开启流式
-)
+    stream=False  # False=等AI写完一次性返回（简单省事）
+)    
 
 # 逐块获取生成内容
-for homo in YAJU:
-    if homo.choices[0].delta.content: 
-        print(homo.choices[0].delta.content, end="", flush=True)
+print(response.choices[0].message.content)
